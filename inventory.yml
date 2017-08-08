@@ -1,0 +1,44 @@
+# https://github.com/kubernetes-incubator/kubespray/blob/master/docs/ansible.md
+
+all:
+  hosts:
+    node1:
+      ansible_host: 10.0.0.1
+    node2:
+      ansible_host: 10.0.0.2
+    node3:
+      ansible_host: 10.0.0.3
+  vars:
+    # https://github.com/kubernetes-incubator/kubespray/blob/master/docs/vars.md
+    # https://github.com/kubernetes-incubator/kubespray/blob/master/roles/kubespray-defaults/defaults/main.yaml
+    ansible_user: centos
+    authorization_modes: [RBAC]
+    kube_version: v1.7.2
+    # Default calico network doesn't work with RBAC:
+    kube_network_plugin: flannel
+
+
+kube-master:
+  hosts:
+    node1:
+    node2:
+
+kube-node:
+  hosts:
+    node1:
+    node2:
+    node3:
+
+etcd:
+  hosts:
+    node1:
+    node2:
+    node3:
+
+k8s-cluster:
+  children:
+    kube-node:
+    kube-master:
+
+#calico-rr:
+#bastion:
