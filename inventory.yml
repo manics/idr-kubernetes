@@ -3,19 +3,32 @@
 all:
   hosts:
     node1:
-      ansible_host: 10.0.0.1
+      ansible_host: 192.168.100.1
     node2:
-      ansible_host: 10.0.0.2
+      ansible_host: 192.168.100.2
     node3:
-      ansible_host: 10.0.0.3
+      ansible_host: 192.168.100.3
+    node4:
+      ansible_host: 192.168.100.4
+    # kubespray bastion
+    bastion:
+      ansible_ssh_host: 10.0.0.1
   vars:
     # https://github.com/kubernetes-incubator/kubespray/blob/master/docs/vars.md
     # https://github.com/kubernetes-incubator/kubespray/blob/master/roles/kubespray-defaults/defaults/main.yaml
     ansible_user: centos
     authorization_modes: [RBAC]
-    kube_version: v1.7.2
+    #kube_version: v1.7.5
     # Default calico network doesn't work with RBAC:
     kube_network_plugin: flannel
+    helm_enabled: true
+    # Experimental:
+    kubeconfig_localhost: true
+    # kubespray bastion
+    ansible_ssh_common_args: "-F {{ playbook_dir }}/ssh-bastion.conf"
+    kube_additional_ip_sans:
+    - 10.0.0.1
+    - 10.0.0.2
 
 
 kube-master:
@@ -28,6 +41,7 @@ kube-node:
     node1:
     node2:
     node3:
+    node4:
 
 etcd:
   hosts:
@@ -41,4 +55,3 @@ k8s-cluster:
     kube-master:
 
 #calico-rr:
-#bastion:
