@@ -1,0 +1,32 @@
+# https://docs.openshift.org/latest/install_config/install/advanced_install.html
+
+all:
+  hosts:
+    oc1:
+      ansible_host: 10.0.0.1
+
+masters:
+  hosts:
+    oc1:
+
+etcd:
+  hosts:
+    oc1:
+
+nodes:
+  hosts:
+    oc1:
+
+OSEv3:
+  children:
+    masters:
+    etcd:
+    nodes:
+  vars:
+    ansible_user: centos
+    ansible_become: true
+    openshift_deployment_type: origin
+    openshift_public_ip: 10.0.0.1
+    openshift_schedulable: true
+    # var needs to be larger in production, disable whilst testing locally
+    openshift_disable_check: disk_availability
