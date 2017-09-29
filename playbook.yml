@@ -1,1 +1,34 @@
 - include: kubespray/cluster.yml
+
+
+- hosts: idr-storage
+
+  tasks:
+
+  - name: Get node details
+    become: yes
+    command: >
+      /usr/local/bin/kubectl --kubeconfig /etc/kubernetes/admin.conf
+      get node
+      {{ ansible_hostname }}
+      -o json
+    register: _kubectl_node_details
+    check_mode: no
+    changed_when: False
+
+  - name: Set node label
+    become: yes
+    command: >
+      /usr/local/bin/kubectl --kubeconfig /etc/kubernetes/admin.conf
+      label node
+      {{ ansible_hostname }}
+      --overwrite
+      "{{ storage_node_label_key }}={{ storage_node_label_value }}"
+    when: >
+      ((_kubectl_node_details.stdout | from_json)
+        .metadata.labels[storage_node_label_key] | default('')) !=
+        storage_node_label_value
+
+  vars:
+    storage_node_label_key: idr.storagehost
+    storage_node_label_value: "true"

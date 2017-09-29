@@ -55,3 +55,7 @@ k8s-cluster:
     kube-master:
 
 #calico-rr:
+
+idr-storage:
+  hosts:
+    node1:
