@@ -2,17 +2,9 @@
 
 all:
   hosts:
-    node1:
-      ansible_host: 192.168.100.1
-    node2:
-      ansible_host: 192.168.100.2
-    node3:
-      ansible_host: 192.168.100.3
-    node4:
-      ansible_host: 192.168.100.4
-    # kubespray bastion
     bastion:
-      ansible_ssh_host: 10.0.0.1
+      ansible_ssh_host: "{{ external_access }}"
+
   vars:
     # https://github.com/kubernetes-incubator/kubespray/blob/master/docs/vars.md
     # https://github.com/kubernetes-incubator/kubespray/blob/master/roles/kubespray-defaults/defaults/main.yaml
@@ -30,8 +22,7 @@ all:
     # These are the external IPs of the master nodes
     #kube_additional_ip_sans:
     supplementary_addresses_in_ssl_keys:
-    - 10.0.0.1
-    - 10.0.0.2
+    - "{{ external_access }}"
 
     # Docker
     #docker_version: '17.09'
@@ -51,33 +42,29 @@ all:
     kube_network_plugin: flannel
     docker_enable_iptables: true
 
-
+    external_access: 10.0.0.1
 
 kube-master:
-  hosts:
-    node1:
-    node2:
+  children:
+    kube-kubemaster-hosts:
 
 kube-node:
-  hosts:
-    node1:
-    node2:
-    node3:
-    node4:
+  children:
+    kube-kubeworker-hosts:
 
 etcd:
-  hosts:
-    node1:
-    node2:
-    node3:
+  children:
+    kube-kubemaster-hosts:
 
 k8s-cluster:
   children:
     kube-node:
     kube-master:
 
-#calico-rr:
+bastion:
+  hosts:
+    kube-master-0:
 
 idr-storage:
   hosts:
-    node1:
+    kube-master-0:
