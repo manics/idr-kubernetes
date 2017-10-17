@@ -3,7 +3,7 @@
 all:
   hosts:
     bastion:
-      ansible_ssh_host: "{{ external_access }}"
+      ansible_host: "{{ external_access }}"
 
   vars:
     # https://github.com/kubernetes-incubator/kubespray/blob/master/docs/vars.md
@@ -60,10 +60,6 @@ k8s-cluster:
   children:
     kube-node:
     kube-master:
-
-bastion:
-  hosts:
-    kube-master-0:
 
 idr-storage:
   hosts:
