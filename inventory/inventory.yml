@@ -6,27 +6,25 @@ all:
       ansible_host: "{{ external_access }}"
 
   vars:
+    external_access: 10.0.100.1
+
     # https://github.com/kubernetes-incubator/kubespray/blob/master/docs/vars.md
     # https://github.com/kubernetes-incubator/kubespray/blob/master/roles/kubespray-defaults/defaults/main.yaml
     ansible_user: centos
-    # RBAC should be the default now
-    #authorization_modes: [RBAC]
-    #kube_version: v1.7.5
     helm_enabled: true
-    helm_version: v2.6.2
+    #helm_version: v2.6.2
     # Experimental (creates a local kubeconfig file):
     kubeconfig_localhost: true
     # kubespray bastion
     #ansible_ssh_common_args: "-F {{ playbook_dir }}/kubespray/ssh-bastion.conf"
     ansible_ssh_common_args: "-F kubespray/ssh-bastion.conf"
     # These are the external IPs of the master nodes
-    #kube_additional_ip_sans:
     supplementary_addresses_in_ssl_keys:
     - "{{ external_access }}"
 
     # Docker
     #docker_version: '17.09'
-    docker_version: stable
+    #docker_version: stable
     #docker_rh_repo_base_url: 'https://download.docker.com/linux/centos/7/x86_64/stable'
     #docker_rh_repo_gpgkey: 'https://download.docker.com/linux/centos/gpg'
     # Copied from inventory/group_vars/k8s-cluster.yml + mtu
@@ -39,10 +37,8 @@ all:
     #calico_endpoint_to_host_action: "ACCEPT"
 
     # Flannel (Calico doesn't seem to work)
-    kube_network_plugin: flannel
-    docker_enable_iptables: true
-
-    external_access: 10.0.0.1
+    #kube_network_plugin: flannel
+    #docker_enable_iptables: true
 
 kube-master:
   children:
@@ -61,6 +57,6 @@ k8s-cluster:
     kube-node:
     kube-master:
 
-idr-storage:
-  hosts:
-    kube-master-0:
+#idr-storage:
+#  hosts:
+#    kube-master-0:
